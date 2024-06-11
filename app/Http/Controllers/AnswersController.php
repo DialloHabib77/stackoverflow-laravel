@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Answer;
 use Illuminate\Http\Request;
 
 class AnswersController extends Controller
@@ -12,6 +13,16 @@ class AnswersController extends Controller
     public function index()
     {
         //
+          try {
+                $answers = Answer::all();
+                return response()->json($answers);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'message' => 'Error: ' .
+                    $e->getMessage(),
+                    'code' => $e->getCode()
+                ]);
+            }
     }
 
     /**
@@ -28,6 +39,31 @@ class AnswersController extends Controller
     public function store(Request $request)
     {
         //
+        $request->validate([
+               'question_id' => 'required',
+                'user_id' => 'required',
+                'body' => 'required',
+                'validated' => 'required'
+        ]);
+        try {
+            $answer = new Answer();
+            $answer->question_id = $request->question_id;
+            $answer->user_id = $request->user_id;
+            $answer->body = $request->body;
+            $answer->validated = 'false';
+            $answer->save();
+            return response()->json([$answer,
+                'message' => 'Answer created successfully',
+                'code' => 200,
+
+            ] );
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error: ' .
+                $e->getMessage(),
+                'code' => $e->getCode()
+            ]);
+        }
     }
 
     /**
@@ -52,6 +88,31 @@ class AnswersController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        $request->validate([
+            'question_id' => 'required',
+            'user_id' => 'required',
+            'body' => 'required',
+            'validated' => 'required'
+        ]);
+        try {
+            $answer = Answer::find($id);
+            $answer->question_id = $request->question_id;
+            $answer->user_id = $request->user_id;
+            $answer->body = $request->body;
+            $answer->validated = $request->validated;
+            $answer->save();
+            return response()->json([$answer,
+                'message' => 'Answer updated successfully',
+                'code' => 200,
+
+            ] );
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error: ' .
+                $e->getMessage(),
+                'code' => $e->getCode()
+            ]);
+        }
     }
 
     /**
