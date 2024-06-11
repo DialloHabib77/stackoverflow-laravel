@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Validation;
 use Illuminate\Http\Request;
 
 class ValidationController extends Controller
@@ -28,6 +29,26 @@ class ValidationController extends Controller
     public function store(Request $request)
     {
         //
+        $request->validate([
+            'answer_id' => 'required',
+            'supervisor_id' => 'required',
+            ]);
+        try{
+            $validation = new Validation();
+            $validation->answer_id = $request->answer_id;
+            $validation->supervisor_id = $request->supervisor_id;
+            $validation->save();
+            return response()->json([$validation,
+                'message' => 'Validation created successfully',
+                'code' => 200,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error: ' .
+                $e->getMessage(),
+                'code' => $e->getCode()
+            ]);
+        }
     }
 
     /**

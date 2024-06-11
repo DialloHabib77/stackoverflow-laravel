@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -28,6 +29,31 @@ class UserController extends Controller
     public function store(Request $request)
     {
         //
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required',
+            'password' => 'required',
+            'role' => 'required'
+        ]);
+        try {
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = $request->password;
+            $user->role = 'student'; // default role is 'student
+            $user->save();
+            return response()->json([$user,
+                'message' => 'User created successfully',
+                'code' => 200,
+
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error: ' .
+                $e->getMessage(),
+                'code' => $e->getCode()
+            ]);
+        }
     }
 
     /**
