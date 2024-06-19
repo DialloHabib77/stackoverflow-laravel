@@ -22,3 +22,5 @@ Route::apiResource('/question', App\Http\Controllers\QuestionController::class);
 Route::apiResource('/theme', App\Http\Controllers\ThemeController::class);
 Route::apiResource('/user', App\Http\Controllers\UserController::class);
 
+Route::post('/login', [App\Http\Controllers\UserController::class, 'login']);
+
