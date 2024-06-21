@@ -14,6 +14,16 @@ class UserController extends Controller
     public function index()
     {
         //
+        try {
+            $users = User::all();
+            return response()->json($users);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error: ' .
+                $e->getMessage(),
+                'code' => $e->getCode()
+            ]);
+        }
     }
 
     /**
